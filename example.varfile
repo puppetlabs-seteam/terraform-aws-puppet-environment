@@ -1,0 +1,7 @@
+aws_sshkey="user.name"
+aws_sshkey_path="~/.ssh/secretkey.pem"
+user_name="user.name"
+git_url="git@github.com:puppetlabs/control-repo"
+prefix="exa"
+linux_count = 3
+windows_count = 3
