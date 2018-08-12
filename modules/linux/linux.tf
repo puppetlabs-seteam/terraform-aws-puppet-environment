@@ -9,17 +9,17 @@ data "template_file" "init" {
   vars {
     puppet_name    = "${var.puppet_name}"
     puppet_ip      = "${var.puppet_ip}"
-    puppet_fqdn    = "${var.puppet_name}.${var.domain}"
+    puppet_fqdn    = "${var.puppet_name}.${var.pridomain}"
     pp_role        = "${var.pp_role}"
     pp_application = "${var.pp_application}"
     pp_environment = "${var.pp_environment}"
     name           = "${format("${var.name}-%02d", count.index + 1)}"
-    domain         = "${var.domain}"
+    domain         = "${var.pridomain}"
   }
 }
 
 data "aws_route53_zone" "linux" {
-  name = "${var.domain}"
+  name = "${var.pubdomain}"
 }
 
 resource "aws_route53_record" "linux" {
@@ -40,7 +40,7 @@ resource "aws_instance" "linux" {
   key_name                    = "${var.sshkey}"
 
   tags {
-    Name             = "${var.name}-${format("%02d", count.index + 1)}.${var.domain}"
+    Name             = "${var.name}-${format("%02d", count.index + 1)}.${var.pridomain}"
     department       = "tse"
     project          = "Demo"
     created_by       = "${var.user_name}"

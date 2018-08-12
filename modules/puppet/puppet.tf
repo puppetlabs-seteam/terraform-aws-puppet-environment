@@ -10,7 +10,7 @@ data "template_file" "init" {
 
   vars {
     master_name   = "${var.name}"
-    master_fqdn   = "${var.name}.${var.domain}"
+    master_fqdn   = "${var.name}.${var.pridomain}"
     git_pri_key   = "${file("${var.git_pri_key}")}"
     git_pub_key   = "${file("${var.git_pub_key}")}"
     git_url       = "${var.git_url}"
@@ -22,12 +22,12 @@ data "template_file" "init" {
 }
 
 data "aws_route53_zone" "puppet" {
-  name = "${var.domain}"
+  name = "${var.pubdomain}"
 }
 
 resource "aws_route53_record" "puppet" {
   zone_id = "${data.aws_route53_zone.puppet.zone_id}"
-  name    = "${var.name}.${var.domain}"
+  name    = "${var.name}.${var.pubdomain}"
   type    = "A"
   ttl     = "300"
   records = ["${aws_instance.puppet.public_ip}"]
@@ -41,7 +41,7 @@ resource "aws_instance" "puppet" {
   key_name                    = "${var.sshkey}"
 
   tags {
-    Name             = "${var.name}.${var.domain}"
+    Name             = "${var.name}.${var.pridomain}"
     department       = "tse"
     project          = "Demo"
     created_by       = "${var.user_name}"

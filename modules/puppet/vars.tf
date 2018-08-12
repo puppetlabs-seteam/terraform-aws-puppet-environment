@@ -6,7 +6,9 @@
 # Puppet Master Variables
 #--------------------------------------------------------------
 variable "name"          {}
-variable "domain"        { default = "puppet.vm" }
+variable "pridomain"        { default = "puppet.vm" }
+variable "pubdomain"        { default = "aws.tsedemos.com" }
+
 variable "ami"           {}
 variable "subnet_id"     {}
 variable "sshkey"        {}

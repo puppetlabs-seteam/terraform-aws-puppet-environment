@@ -26,7 +26,8 @@ variable region             { default = "us-west-2" }
 // variable network0_subnet0   { 
 //     description = "The CIDR block for your primary subnet"
 // }
-variable domain             { default = "puppet.vm" }
+variable pridomain             { default = "puppet.vm" }
+variable pubdomain             { default = "tsedemos.com"}
 
 #--------------------------------------------------------------
 # Instance Variables
