@@ -18,4 +18,4 @@ variable "eyaml_pub_key" {}
 variable "prefix"        {}
 variable "user_name"     {}
 variable "pe_version"    {}
-variable "lifetime" {}
+variable "lifetime"      {}
