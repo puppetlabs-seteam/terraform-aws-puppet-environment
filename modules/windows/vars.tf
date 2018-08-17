@@ -6,7 +6,8 @@
 # win Variables
 #--------------------------------------------------------------
 variable "name"           {}
-variable "domain"         {}
+variable "pubdomain"      {}
+variable "pridomain"      {}
 variable "ami"            {}
 variable "subnet_id"      {}
 variable "sshkey"         {}

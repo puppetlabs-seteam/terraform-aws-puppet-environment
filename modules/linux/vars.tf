@@ -2,7 +2,9 @@
 # Module Variables
 #--------------------------------------------------------------
 variable "name"           {}
-variable "domain"         {}
+variable "pridomain"         {}
+
+variable "pubdomain"         {}
 variable "ami"            {}
 variable "subnet_id"      {}
 variable "sshkey"         {}

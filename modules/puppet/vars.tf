@@ -6,7 +6,9 @@
 # Puppet Master Variables
 #--------------------------------------------------------------
 variable "name"          {}
-variable "domain"        { default = "puppet.vm" }
+variable "pridomain"        { default = "puppet.vm" }
+variable "pubdomain"        { default = "aws.tsedemos.com" }
+
 variable "ami"           {}
 variable "subnet_id"     {}
 variable "sshkey"        {}
@@ -18,4 +20,4 @@ variable "eyaml_pub_key" {}
 variable "prefix"        {}
 variable "user_name"     {}
 variable "pe_version"    {}
-variable "lifetime" {}
+variable "lifetime"      {}

@@ -53,6 +53,12 @@ This terraform code will build a demo environment in AWS containing of:
 
     linux_count: Number of CentOS 7 instances to provision. (default: 1)
     windows_count: Number of Windows 2016 instances to provision. (default: 1)
+    prefix: Unique prefix for the domain name to match the user's environmental name. (default: "cdrobey")
+    git_url: URL of Puppet control repository. (default: "git@github.com:cdrobey/puppet-repo")
+    git_pri_key: Path to the primary ssh key of your github repository. (default: "/app/keys/github")
+    git_pub_key: Path to the public key of your github repository. (default: "/app/keys/github.pub")
+    eyaml_pri_key: Path to the private key used for eyaml hiera. (default: "/app/keys/private_key.pkcs7.pem")
+    eyaml_pub_key: Path to the public key use for eyaml heira. (default:  "/app/keys/public_key.pkcs7.pem")
 
 ####TODO
 
