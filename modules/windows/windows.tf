@@ -33,7 +33,7 @@ resource "aws_route53_record" "windows" {
   name    = "${var.name}-${format("%02d", count.index + 1)}"
   type    = "A"
   ttl     = "300"
-  records = ["${element(aws_instance.windows.*.public_ip, count.index)}"]
+  records = ["${element(aws_instance.windows.*.public_ip, count.index + 1)}"]
 }
 
 resource "aws_instance" "windows" {
