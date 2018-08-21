@@ -19,18 +19,18 @@ This terraform code will build a demo environment in AWS containing of:
 #### Pre-Deployment Steps
 
 * Run `eyaml createkeys`. 
-   * This will create a `./keys` folder and generate 2 files in it: `./keys/private_key.pkcs7.pem, ./keys/public_key.pkcs7.pem`.
+   * This command wil create a `./keys` folder and generate 2 files in it: *./keys/private_key.pkcs7.pem*, */keys/public_key.pkcs7.pem*.
 * Generate private & public key files called in the ./keys folder: `ssh-keygen -f ./keys/<your initials>-control-repo`. For example: `ssh-keygen -f ./keys/rr-control-repo` *(just hit Enter to all questions)*
-* Upload the `<your initials>-control-repo.pub` public key to your AWS account.
+* Upload the *<your initials>-control-repo.pub* public key to your AWS account.
    * Login to the AWS Bastion 
    * Switch role
    * Click on Services -> EC2 -> Key Pair (on left hand side menu)
-   * Click on *Import Key Pair* and upload the `./keys/<your initials>-control-repo.pub` file or cut-and-paste its contents
-* Upload the `<your initials>-control-repo.pub` public key to your Github account
+   * Click on *Import Key Pair* and upload the *./keys/<your initials>-control-repo.pub* file or cut-and-paste its contents
+* Upload the *<your initials>-control-repo.pub* public key to your Github account
    * Login to Github.
-   * Go to your Settings -> SSH and GPG Keys or `https://github.com/settings/keys`. 
-   * Click on *New SSH Key* button and upload the `./keys/<your initials>-control-repo.pub` file.
-* Create [your var file](Create Your Var File) or request one from your team. Below, the var file is called `example.varfile`.
+   * Go to your Settings -> SSH and GPG Keys or go to *https://github.com/settings/keys*. 
+   * Click on *New SSH Key* button and upload the *./keys/<your initials>-control-repo.pub* file.
+* Create [your var file](Create Your Var File) or request one from your team. Below, the var file is called *example.varfile*.
 
 #### Running it in Docker
 
