@@ -11,14 +11,26 @@ This terraform code will build a demo environment in AWS containing of:
 
 #### Pre-Requisites
 
-* Docker installed on your laptop.
+* Docker installed on your laptop. https://www.docker.com/get-started
+* If you are on a Mac, install Homebrew Package manager https://brew.sh/
+* Install ruby: `brew install ruby`
 * The ruby hiera-eyaml gem should be installed. `gem install hiera-eyaml`
 
 #### Pre-Deployment Steps
 
-* Run `eyaml createkeys`
-* Generate ssh keys for github and store them in the ./keys folder eyaml created. `ssh-keygen -f ./keys/control-repo`
-* Create [your var file](Create Your Var File).
+* Run `eyaml createkeys`. 
+   * This command wil create a `./keys` folder and generate 2 files in it: *./keys/private_key.pkcs7.pem*, */keys/public_key.pkcs7.pem*.
+* Generate private & public key files called in the ./keys folder: `ssh-keygen -f ./keys/<your initials>-control-repo`. For example: `ssh-keygen -f ./keys/rr-control-repo` *(just hit Enter to all questions)*
+* Upload the *<your initials>-control-repo.pub* public key to your AWS account.
+   * Login to the AWS Bastion 
+   * Switch role
+   * Click on Services -> EC2 -> Key Pair (on left hand side menu)
+   * Click on *Import Key Pair* and upload the *./keys/<your initials>-control-repo.pub* file or cut-and-paste its contents
+* Upload the *<your initials>-control-repo.pub* public key to your Github account
+   * Login to Github.
+   * Go to your Settings -> SSH and GPG Keys or go to *https://github.com/settings/keys*. 
+   * Click on *New SSH Key* button and upload the *./keys/<your initials>-control-repo.pub* file.
+* Create [your var file](Create Your Var File) or request one from your team. Below, the var file is called *example.varfile*.
 
 #### Running it in Docker
 
@@ -28,7 +40,7 @@ This terraform code will build a demo environment in AWS containing of:
 
 **Validate**
 
-    > docker run -it -e "AWS_ACCESS_KEY_ID=*your-access-key*" -e "AWS_SECRET_ACCESS_KEY=*your-secret-key*" -v $(pwd):/app/ -w /app/ hashicorp/terraform:light validate
+    > docker run -it -e "AWS_ACCESS_KEY_ID=*your-access-key*" -e "AWS_SECRET_ACCESS_KEY=*your-secret-key*" -v $(pwd):/app/ -w /app/ hashicorp/terraform:light validate --var-file=example.varfile
 
 **Plan**
 
