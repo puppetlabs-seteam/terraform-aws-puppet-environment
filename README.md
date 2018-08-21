@@ -46,8 +46,8 @@ This terraform code will build a demo environment in AWS containing of:
     aws_sshkey: The name of the sshkey in AWS to use for logging into instances.
     aws_sshkey_path: the path to the PEM file on your laptop.
     user_name: Identify instance you've built (created_by tag)
-    git_url: link to your puppet control repo in git.
     prefix: tags a subdomain to your instances.
+    pridomain: private domain suffix
 
 **Optional**
 
