@@ -28,7 +28,7 @@ resource "aws_route53_record" "linux" {
   name    = "${var.name}-${format("%02d", count.index + 1)}"
   type    = "A"
   ttl     = "300"
-  records = ["${element(aws_instance.linux.*.public_ip, count.index)}"]
+  records = ["${element(aws_instance.linux.*.public_ip, count.index + 1)}"]
 }
 
 resource "aws_instance" "linux" {
