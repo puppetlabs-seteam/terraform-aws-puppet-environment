@@ -10,6 +10,7 @@ $$CSR_FILE="csr_attributes.yaml"
 $$ADMIN_PASSWORD="${password}"
 
 New-Item -Path C:\programdata\puppetlabs\facter\facts.d -ItemType Directory -Force
+Set-Content -Path C:\programdata\puppetlabs\facter\facts.d\role.txt -Value (@{role = "${pp_role}" | ConvertTo-Json})
 New-Item -Path C:\ProgramData\PuppetLabs\puppet\etc\ -ItemType Directory -Force
 
 $yaml = @"

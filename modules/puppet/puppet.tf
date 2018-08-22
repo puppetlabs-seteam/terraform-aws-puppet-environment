@@ -1,6 +1,20 @@
 #--------------------------------------------------------------
 # This module creates the puppet master resources
 #--------------------------------------------------------------
+variable "name"          {}
+variable "domain"        {}
+variable "ami"           {}
+variable "subnet_id"     {}
+variable "sshkey"        {}
+variable "git_pri_key"   {}
+variable "git_pub_key"   {}
+variable "git_url"       {}
+variable "eyaml_pri_key" {}
+variable "eyaml_pub_key" {}
+variable "prefix"        {}
+variable "user_name"     {}
+variable "pe_version"    {}
+variable "zone_id"       {}
 
 #--------------------------------------------------------------
 # Resources: Build Puppet Master Configuration
@@ -36,4 +50,12 @@ resource "aws_instance" "puppet" {
     termination_date = "2020-06-01T19:59:02.539657+00:00"
   }
   user_data = "${data.template_file.init.rendered}"
+}
+
+resource "aws_route53_record" "puppet" {
+  zone_id = "${var.zone_id}"
+  name    = "puppet.${var.domain}"
+  type    = "A"
+  ttl     = "300"
+  records = ["${aws_instance.puppet.public_ip}"]
 }

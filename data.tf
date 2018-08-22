@@ -1,25 +1,29 @@
-data "aws_vpc" "puppetdemos" {
-  tags {
-    Name = "puppetdemos-vpc"
-  }
+// data "aws_vpc" "tsedemos" {
+//   tags {
+//     Name = "tsedemos-vpc"
+//   }
+// }
+
+// data "aws_subnet" "puppetdemos" {
+//   tags {
+//     Name = "puppetdemos-subnet"
+//   }
+// }
+
+data "aws_route53_zone" "mydomain" {
+  name    = "${var.domain}"
 }
 
-data "aws_subnet" "puppetdemos" {
-  tags {
-    Name = "puppetdemos-subnet"
-  }
-}
-
-data "aws_ami" "ubuntu1604" {
-  owners      = ["099720109477"]
+data "aws_ami" "windows_2016" {
+  owners      = ["amazon"]
   most_recent = true
   filter = {
     name = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+    values = ["Windows_Server-*-English-Core-Base*"]
   }
 }
 
-data "aws_ami" "centos7" {
+data "aws_ami" "centos_7" {
   owners      = ["aws-marketplace"]
   most_recent = true
   filter = {
@@ -27,4 +31,3 @@ data "aws_ami" "centos7" {
     values = ["CentOS Linux 7 x86_64 HVM EBS*"]
   }
 }
-

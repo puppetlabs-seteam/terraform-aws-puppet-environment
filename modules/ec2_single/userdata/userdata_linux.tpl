@@ -17,7 +17,7 @@ echo ${puppet_ip} ${puppet_fqdn} ${puppet_name} >> /etc/hosts
 #   - WORKDIR:    TMP directory for script
 #   - LOGFILE:    Execution Log for bootstrap on client hosts
 #--------------------------------------------------------------
-PATH=$PATH:/opt/puppetlabs/bin
+PATH=$PATH:/opt/puppetlabs/bin:/usr/local/bin
 HOME=/tmp
 PEINSTALL_FILE=/tmp/pe_install.sh
 PEINSTALL_URL="https://${puppet_fqdn}:8140/packages/current/install.bash"
@@ -28,6 +28,7 @@ PP_APPLICATION=${pp_application}
 PP_ENVIRONMENT=${pp_environment}
 PP_HOSTNAME=${name}
 PP_ZONE=${domain}
+PUPPETIZE=${puppetize}
 
 #--------------------------------------------------------------
 # Redirect all stdout and stderr to logfile,
@@ -43,6 +44,8 @@ function pre_install_pa {
   echo "======================= Executing pre_install_pa ======================="
   if [ ! -d /etc/puppetlabs/puppet ]; then
     mkdir -p /etc/puppetlabs/puppet
+    mkdir -p /etc/puppetlabs/facter/facts.d
+    echo "role=${pp_role}" > /etc/puppetlabs/facter/facts.d/role.txt
   fi
   cat > /etc/puppetlabs/puppet/csr_attributes.yaml << YAML
 extension_requests:
@@ -52,13 +55,20 @@ extension_requests:
     pp_hostname: $${PP_HOSTNAME}
     pp_zone: $${PP_ZONE}
 YAML
-}
+  cat > /root/.bash_profile << FOO
+  # .bash_profile
 
-#--------------------------------------------------------------
-# Peform post-agent installation tasks.
-#--------------------------------------------------------------
-function post_install_pa {
-  echo "======================= Executing pre_install_pa ======================="
+  # Get the aliases and functions
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
+
+  # User specific environment and startup programs
+
+  PATH=$PATH:$HOME/bin
+
+  export PATH
+FOO
 }
 
 #--------------------------------------------------------------
@@ -69,7 +79,7 @@ function install_pa {
   echo "======================= Executing install_pa ======================="
 
   cd /tmp || exit 1
-
+  sleep 300
   while :; do
     curl -k $${PEINSTALL_URL} -o "$${PEINSTALL_FILE}" && break
     sleep 30
@@ -96,7 +106,9 @@ function run_puppet {
 # Main Script
 #--------------------------------------------------------------
 pre_install_pa
-install_pa
-post_install_pa
-run_puppet
+if [ $${PUPPETIZE} ];
+then
+    install_pa
+    run_puppet
+fi
 exit 0
