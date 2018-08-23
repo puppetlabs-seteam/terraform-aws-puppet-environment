@@ -2,7 +2,8 @@
 # Resources: Module Instance Build
 #--------------------------------------------------------------
 variable "name"           { }
-variable "domain"         { }
+variable "pubdomain"      { }
+variable "pridomain"      { }
 variable "ami"            { }
 variable "subnet_id"      { }
 variable "sshkey"         { }
@@ -29,21 +30,20 @@ data "template_file" "init" {
     vars {
         puppet_name     = "${var.puppet_name}"
         puppet_ip       = "${var.puppet_ip}"
-        puppet_fqdn     = "${var.puppet_name}.${var.domain}"
+        puppet_fqdn     = "${var.puppet_name}.${var.pridomain}"
         pp_role         = "${var.pp_role}"
         pp_application  = "${var.pp_application}"
         pp_environment  = "${var.pp_environment}"
         name            = "${var.count > 1 ? 
-                           format("${var.name}-%02d", count.index + 1) :
-                           var.name}"
-        domain          = "${var.domain}"
+            format("%v-%02d", var.name, count.index + 1) :
+            format("%v", var.name)}"
+        domain          = "${var.pridomain}"
         puppetize       = "${var.puppetize}"
         password        = "${var.password}"
     }
 }
 
 resource "aws_instance" "ec2_instance" {
-
   ami                         = "${var.ami}"
   count                       = "${var.count}"
   instance_type               = "${var.instance_type}"
@@ -53,8 +53,8 @@ resource "aws_instance" "ec2_instance" {
 
   tags {
     Name = "${var.count > 1 ? 
-            format("${var.name}-%02d.${var.domain}", count.index + 1) :
-            ${var.name}.${var.domain}}"
+            format("%v-%02d.%v", var.name, count.index + 1, var.pridomain) :
+            format("%v.%v", var.name, var.pridomain)}"
     department = "tse"
     project = "Demo"
     created_by = "${var.user_name}"
@@ -67,8 +67,8 @@ resource "aws_instance" "ec2_instance" {
 resource "aws_route53_record" "ec2_instance-dns" {
   zone_id = "${var.zone_id}"
   name    = "${var.count > 1 ? 
-             format("${var.name}-%02d.${var.domain})", count.index + 1) :
-             var.name}"
+            format("%v-%02d.%v", var.name, count.index + 1, var.pubdomain) :
+            format("%v.%v", var.name, var.pubdomain)}"
   type    = "A"
   ttl     = "300"
   records = ["${aws_instance.ec2_instance.*.public_ip}"]

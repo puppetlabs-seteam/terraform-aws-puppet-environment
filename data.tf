@@ -1,17 +1,6 @@
-// data "aws_vpc" "tsedemos" {
-//   tags {
-//     Name = "tsedemos-vpc"
-//   }
-// }
-
-// data "aws_subnet" "puppetdemos" {
-//   tags {
-//     Name = "puppetdemos-subnet"
-//   }
-// }
 
 data "aws_route53_zone" "mydomain" {
-  name    = "${var.domain}"
+  name    = "${var.pubdomain}"
 }
 
 data "aws_ami" "windows_2016" {

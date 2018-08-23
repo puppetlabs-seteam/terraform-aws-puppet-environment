@@ -25,15 +25,9 @@ variable prefix             {
 #--------------------------------------------------------------
 # Site Variables
 #--------------------------------------------------------------
-variable region             { default = "us-west-2" }
-// variable network0_cidr      { 
-//     description = "The CIDR block for your VPC"
-// }
-// variable network0_subnet0   { 
-//     description = "The CIDR block for your primary subnet"
-// }
-variable domain             { default = "puppet.vm" }
-
+variable region    { default = "us-west-2" }
+variable pubdomain { default = "puppet.vm" }
+variable pridomain {}
 #--------------------------------------------------------------
 # Instance Variables
 #--------------------------------------------------------------

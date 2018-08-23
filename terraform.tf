@@ -1,8 +1,12 @@
 #--------------------------------------------------------------
 # This module creates all demonstration resources
 #--------------------------------------------------------------
-
-
+module "network" {
+  source    = "modules/network"
+  cidr      = "${var.network}"
+  pridomain = "${var.pridomain}"
+  pubdomain = "${var.pubdomain}"
+}
 
 #--------------------------------------------------------------
 # Module: Build Puppet Master Server
@@ -10,8 +14,9 @@
 module "puppet" {
   source = "modules/puppet"
   name          = "puppet"
-  subnet_id     = "${aws_subnet.puppetdemos_subnet.id}"
-  domain        = "${var.domain}"
+  subnet_id     = "${module.network.subnet_id}"
+  pridomain     = "${var.pridomain}"
+  pubdomain     = "${var.pubdomain}"
   ami           = "${data.aws_ami.centos_7.image_id}"
   sshkey        = "${var.aws_sshkey}"
   git_pri_key   = "${var.git_pri_key}"
@@ -30,17 +35,18 @@ module "puppet" {
 # Module: Build Windows Server
 #--------------------------------------------------------------
 module "windows" {
-  source = "modules/ec2_instance"
-  ostype = "windows"
+  source         = "modules/ec2_instance"
+  ostype         = "windows"
+  name           = "windows"
+  puppet_name    = "puppet"
   user_name      = "${var.user_name}"
   instance_type  = "${var.windows_instance_type}"
   count          = "${var.windows_count}"
-  name           = "windows"
-  domain         = "${var.domain}"
+  pridomain      = "${var.pridomain}"
+  pubdomain      = "${var.pubdomain}"
   ami            = "${var.windows_ami}"
-  subnet_id      = "${aws_subnet.puppetdemos_subnet.id}"
+  subnet_id      = "${module.network.subnet_id}"
   sshkey         = "${var.aws_sshkey}"
-  puppet_name    = "puppet"
   password       = "${var.windows_administrator_password}"
   pp_role        = "${var.pp_role}"
   pp_application = "${var.pp_application}"
@@ -57,9 +63,10 @@ module "linux" {
   instance_type  = "${var.linux_instance_type}"
   count          = "${var.linux_count}"
   name           = "linux"
-  domain         = "${var.domain}"
+  pridomain      = "${var.pridomain}"
+  pubdomain      = "${var.pubdomain}"
   ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${aws_subnet.puppetdemos_subnet.id}"
+  subnet_id      = "${module.network.subnet_id}"
   sshkey         = "${var.aws_sshkey}"
   puppet_name    = "puppet"
   pp_role        = "${var.pp_role}"
@@ -77,9 +84,10 @@ module "unmanaged_linux_nodes" {
   user_name      = "${var.user_name}"
   instance_type  = "${var.linux_instance_type}"
   name           = "no-lin"
-  domain         = "${var.domain}"
+  pridomain      = "${var.pridomain}"
+  pubdomain      = "${var.pubdomain}"
   ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${aws_subnet.puppetdemos_subnet.id}"
+  subnet_id      = "${module.network.subnet_id}"
   sshkey         = "${var.aws_sshkey}"
   puppet_name    = "puppet"
   pp_role        = "${var.pp_role}"
@@ -92,14 +100,15 @@ module "unmanaged_linux_nodes" {
 
 module "unmanaged_windows_nodes" {
   source = "modules/ec2_instance"
-  ostype         = "linux"
+  ostype         = "windows"
   count          = "${var.unmanaged_windows_count}"
   user_name      = "${var.user_name}"
   instance_type  = "${var.windows_instance_type}"
   name           = "no-win"
-  domain         = "${var.domain}"
+  pridomain      = "${var.pridomain}"
+  pubdomain      = "${var.pubdomain}"
   ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${aws_subnet.puppetdemos_subnet.id}"
+  subnet_id      = "${module.network.subnet_id}"
   sshkey         = "${var.aws_sshkey}"
   puppet_name    = "puppet"
   password       = "${var.windows_administrator_password}"
@@ -118,9 +127,10 @@ module "cd4pe" {
   instance_type  = "${var.cd4pe_instance_type}"
   count          = "${var.cd4pe_count}"
   name           = "cd4pe"
-  domain         = "${var.domain}"
+  pridomain      = "${var.pridomain}"
+  pubdomain      = "${var.pubdomain}"
   ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${aws_subnet.puppetdemos_subnet.id}"
+  subnet_id      = "${module.network.subnet_id}"
   sshkey         = "${var.aws_sshkey}"
   puppet_name    = "puppet"
   pp_role        = "${var.cd4pe_role}"
@@ -131,25 +141,26 @@ module "cd4pe" {
   puppetize      = true
 }
 
-module "discovery" {
-  source         = "modules/ec2_instance"
-  ostype         = "linux"
-  user_name      = "${var.user_name}"
-  instance_type  = "${var.discovery_instance_type}"
-  count          = "${var.discovery_count}"
-  name           = "discovery"
-  domain         = "${var.domain}"
-  ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${aws_subnet.puppetdemos_subnet.id}"
-  sshkey         = "${var.aws_sshkey}"
-  puppet_name    = "puppet"
-  pp_role        = "${var.discovery_role}"
-  pp_application = "${var.discovery_application}"
-  pp_environment = "${var.pp_environment}"
-  puppet_ip      = "${module.puppet.puppet_private_ip}"
-  zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
-  puppetize      = true
-}
+// module "discovery" {
+//   source         = "modules/ec2_instance"
+//   ostype         = "linux"
+//   user_name      = "${var.user_name}"
+//   instance_type  = "${var.discovery_instance_type}"
+//   count          = "${var.discovery_count}"
+//   name           = "discovery"
+//   pridomain      = "${var.pridomain}"
+//   pubdomain      = "${var.pubdomain}"
+//   ami            = "${data.aws_ami.centos_7.image_id}"
+//   subnet_id      = "${module.network.subnet_id}"
+//   sshkey         = "${var.aws_sshkey}"
+//   puppet_name    = "puppet"
+//   pp_role        = "${var.discovery_role}"
+//   pp_application = "${var.discovery_application}"
+//   pp_environment = "${var.pp_environment}"
+//   puppet_ip      = "${module.puppet.puppet_private_ip}"
+//   zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
+//   puppetize      = true
+// }
 
 module "pipelines" {
   source         = "modules/ec2_instance"
@@ -158,9 +169,10 @@ module "pipelines" {
   instance_type  = "${var.pipelines_instance_type}"
   count          = "${var.pipelines_count}"
   name           = "pipelines"
-  domain         = "${var.domain}"
+  pridomain      = "${var.pridomain}"
+  pubdomain      = "${var.pubdomain}"
   ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${aws_subnet.puppetdemos_subnet.id}"
+  subnet_id      = "${module.network.subnet_id}"
   sshkey         = "${var.aws_sshkey}"
   puppet_name    = "puppet"
   pp_role        = "${var.pipelines_role}"

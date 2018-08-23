@@ -1,27 +1,30 @@
+variable cidr {}
+variable pubdomain {}
+variable pridomain {}
+
+output "subnet_id" { value = "${aws_subnet.puppetdemos_subnet.id}" }
 #--------------------------------------------------------------
 # This module creates all site resources
 #--------------------------------------------------------------
 
-variable "vpc_cidr" {}
-variable "subnet_cidr" {}
-
 resource "aws_vpc" "puppetdemos_vpc" {
-    cidr_block = "${var.vpc_cidr}"
+    cidr_block = "${var.cidr}"
     enable_dns_support = true
     enable_dns_hostnames = true
     tags {
-      Name = "puppetdemos-vpc"
+      Name = "${var.pubdomain}-vpc"
       department = "TSE"
       project = "Puppet Demo Environment"
       created_by = "TSE"
       lifetime = "10y"
     }
 }
+
 resource "aws_subnet" "puppetdemos_subnet" {
   vpc_id = "${aws_vpc.puppetdemos_vpc.id}"
-  cidr_block = "${var.subnet_cidr}"
+  cidr_block = "${var.cidr}"
   tags {
-      Name = "puppetdemos-subnet"
+      Name = "${var.pubdomain}-subnet"
       department = "TSE"
       project = "Puppet Demo Environment"
       created_by = "TSE"
@@ -32,7 +35,7 @@ resource "aws_subnet" "puppetdemos_subnet" {
 resource "aws_internet_gateway" "igw" {
   vpc_id = "${aws_vpc.puppetdemos_vpc.id}"
   tags {
-    Name = "puppetdemos-igw"
+    Name = "${var.pubdomain}-igw"
     department = "TSE"
     project = "Puppet Demo Environment"
     created_by = "TS3"
@@ -41,6 +44,9 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_default_network_acl" "defaultnetworkacl" {
+  lifecycle {
+    ignore_changes = true
+  }
   default_network_acl_id = "${aws_vpc.puppetdemos_vpc.default_network_acl_id}"
 
   egress {
@@ -60,7 +66,7 @@ resource "aws_default_network_acl" "defaultnetworkacl" {
     to_port = 0
   }
   tags {
-    Name = "puppetdemos-acl"
+    Name = "${var.pubdomain}-acl"
     department = "TSE"
     project = "Puppet Demo Environment"
     created_by = "TSE"
@@ -74,7 +80,7 @@ resource "aws_default_route_table" "defaultroute" {
     gateway_id = "${aws_internet_gateway.igw.id}"
   }
   tags {
-    Name = "puppetdemos-route"
+    Name = "${var.pubdomain}-route"
     department = "TSE"
     project = "Puppet Demo Environment"
     created_by = "TSE"
@@ -141,37 +147,49 @@ resource "aws_default_security_group" "defaultsg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port   = 5985
-    to_port     = 5986
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-    ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-    ingress {
-    from_port   = 8000
-    to_port     = 8000
+    from_port   = "5985"
+    to_port     = "5986"
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port   = 7000
-    to_port     = 7000
+    from_port   = "8443"
+    to_port     = "8443"
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    from_port   = "8080"
+    to_port     = "8080"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = "8000"
+    to_port     = "8000"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = "7000"
+    to_port     = "7000"
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = "2377"
+    to_port     = "2377"
+    protocol    = "TCP"
+    cidr_blocks = ["${var.cidr}"]
+  }
   egress {
-    from_port = 0
-    to_port = 0
+    from_port = "0"
+    to_port = "0"
     protocol = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    Name = "puppetdemos-sg"
+    Name = "${var.pubdomain}-sg"
     department = "TSE"
     project = "Puppet Demo Environment"
     created_by = "TSE"
@@ -179,11 +197,12 @@ resource "aws_default_security_group" "defaultsg" {
   }
   
 }
+
 resource "aws_vpc_dhcp_options" "defaultdhcp" {
-  domain_name          = "puppetdemos.net"
+  domain_name          = "${var.pridomain}"
   domain_name_servers  = [ "AmazonProvidedDNS" ]
   tags {
-    Name = "puppetdemos-dhcp"
+    Name = "${var.pridomain}-dhcp"
     department = "TSE"
     project = "Puppet Demo Environment"
     created_by = "TSE"
