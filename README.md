@@ -72,6 +72,14 @@ This terraform code will build a demo environment in AWS containing of:
     eyaml_pri_key: Path to the private key used for eyaml hiera. (default: "/app/keys/private_key.pkcs7.pem")
     eyaml_pub_key: Path to the public key use for eyaml heira. (default:  "/app/keys/public_key.pkcs7.pem")
 
+#### Post-Deployment Steps
+* Wait for around 5-10 minutes for the PE Console to be available.
+* You can ssh to the master and agent nodes by typing: `ssh -i ./keys/<your initials>-control-repo <machine name>`
+   * TIP: It is a good idea to put these commands in your `~/.ssh/config` file to stop the host key checking:
+      * __UserKnownHostsFile=/dev/null__
+      * __StrictHostKeyChecking=no__
+   * Reason is you will be destroying & deploying Puppet stacks repeatedly. Problem is the node names will be re-used by this terraform code but these are new instance with new SSH host keys will be different. ssh will report a [WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!](https://linuxcommando.blogspot.com/2008/10/how-to-disable-ssh-host-key-checking.html) error message. 
+
 ####TODO
 
 * Fix the ssh key requirements for both pre-existing or shared keys or create a new one.
