@@ -99,7 +99,7 @@ function run_puppet {
 # Main Script
 #--------------------------------------------------------------
 pre_install_pa
-if [ $PUPPETIZE == 'true' ];
+if [ $PUPPETIZE == 1 ];
 then
     install_pa
     post_install_pa
