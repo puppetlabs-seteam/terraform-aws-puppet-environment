@@ -1,0 +1,16 @@
+network = "10.4.80.0/24"
+pubdomain = "aws.tsedemos.com"
+pridomain = "puppet.vm"
+aws_sshkey = "chris.roberson"
+aws_sshkey_path = "~/puppet_aws.pem"
+user_name = "chris.roberson"
+git_url = "git@github.com:cdrobey/puppet-repo"
+prefix = "cdrobey"
+linux_count = 2
+windows_count = 2
+git_pri_key = "/app/keys/github"
+git_pub_key = "/app/keys/github.pub"
+git_url = "https://github.com/cdrobey/puppet-repo"
+eyaml_pri_key = "/app/keys/private_key.pkcs7.pem"
+eyaml_pub_key = "/app/keys/public_key.pkcs7.pem"
+pe_version = "2018.1.2" 
