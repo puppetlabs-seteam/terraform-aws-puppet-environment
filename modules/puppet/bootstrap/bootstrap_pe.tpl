@@ -4,8 +4,7 @@
 # master.
 #--------------------------------------------------------------
 set -x
-echo HOSTNAME=${master_name} >> /etc/sysconfig/networking
-echo 127.0.0.1 ${master_name} ${master_fqdn} >> /etc/hosts
+
 #--------------------------------------------------------------
 # Global Variables:
 #   - PATH:       PATHs needed for command execution
@@ -13,6 +12,8 @@ echo 127.0.0.1 ${master_name} ${master_fqdn} >> /etc/hosts
 #   - WORKDIR:    TMP directory for script
 #   - LOGFILE:    Execution Log for bootstrap on client hosts
 #--------------------------------------------------------------
+MASTERNAME=${master_name}
+MASTERFQDN=${master_fqdn}
 PATH=$${PATH}:/opt/puppetlabs/bin
 HOME=/root
 WORKDIR="/tmp"
@@ -33,6 +34,8 @@ exec > $${LOGFILE} 2>&1
 #--------------------------------------------------------------
 function setup_host_name {
   echo "======================= Executing setup_host_name ======================="
+  echo HOSTNAME=${master_name} >> /etc/sysconfig/networking
+  echo 127.0.0.1 ${master_name} ${master_fqdn} >> /etc/hosts
 }
 
 #--------------------------------------------------------------
@@ -118,6 +121,7 @@ FILE
 deploy
 puppetlabs
 TEXT
+  echo nodes: 100 > /etc/puppetlabs/license.key
 
   puppet-code -t $${HOME}/.puppetlabs/token deploy production -w
   mkdir -p /etc/puppetlabs/facter/facts.d
