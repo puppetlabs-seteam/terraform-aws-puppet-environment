@@ -79,12 +79,11 @@ variable cd4pe_instance_type { default = "m4.large" }
 # TODO: Move AMIs to data resource, ensure latest.
 
 variable network {}
-variable public_subnet {}
-variable cd4pe_application {}
-variable cd4pe_role {}
-variable discovery_application {}
-variable discovery_instance_type {}
-variable discovery_role {}
-variable pipelines_instance_type {}
-variable pipelines_application {}
-variable pipelines_role {}
+variable cd4pe_application { default = "cd4pe" }
+variable cd4pe_role { default = "cd4pe" }
+variable discovery_application { default = "cd4pe" }
+variable discovery_instance_type {default = "cd4pe"}
+variable discovery_role { default = "cd4pe" }
+variable pipelines_instance_type { default = "cd4pe" }
+variable pipelines_application { default = "cd4pe"}
+variable pipelines_role {default = "cd4pe"}

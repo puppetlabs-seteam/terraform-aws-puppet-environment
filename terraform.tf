@@ -120,65 +120,65 @@ module "unmanaged_windows_nodes" {
   puppetize      = false
 }
 
-module "cd4pe" {
-  source         = "modules/ec2_instance"
-  ostype         = "linux"
-  user_name      = "${var.user_name}"
-  instance_type  = "${var.cd4pe_instance_type}"
-  count          = "${var.cd4pe_count}"
-  name           = "cd4pe"
-  pridomain      = "${var.pridomain}"
-  pubdomain      = "${var.pubdomain}"
-  ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${module.network.subnet_id}"
-  sshkey         = "${var.aws_sshkey}"
-  puppet_name    = "puppet"
-  pp_role        = "${var.cd4pe_role}"
-  pp_application = "${var.cd4pe_application}"
-  pp_environment = "${var.pp_environment}"
-  puppet_ip      = "${module.puppet.puppet_private_ip}"
-  zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
-  puppetize      = true
-}
-
-// module "discovery" {
-//   source         = "modules/ec2_instance"
-//   ostype         = "linux"
-//   user_name      = "${var.user_name}"
-//   instance_type  = "${var.discovery_instance_type}"
-//   count          = "${var.discovery_count}"
-//   name           = "discovery"
-//   pridomain      = "${var.pridomain}"
-//   pubdomain      = "${var.pubdomain}"
-//   ami            = "${data.aws_ami.centos_7.image_id}"
-//   subnet_id      = "${module.network.subnet_id}"
-//   sshkey         = "${var.aws_sshkey}"
-//   puppet_name    = "puppet"
-//   pp_role        = "${var.discovery_role}"
-//   pp_application = "${var.discovery_application}"
-//   pp_environment = "${var.pp_environment}"
-//   puppet_ip      = "${module.puppet.puppet_private_ip}"
-//   zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
-//   puppetize      = true
-// }
-
-module "pipelines" {
-  source         = "modules/ec2_instance"
-  ostype         = "linux"
-  user_name      = "${var.user_name}"
-  instance_type  = "${var.pipelines_instance_type}"
-  count          = "${var.pipelines_count}"
-  name           = "pipelines"
-  pridomain      = "${var.pridomain}"
-  pubdomain      = "${var.pubdomain}"
-  ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${module.network.subnet_id}"
-  sshkey         = "${var.aws_sshkey}"
-  puppet_name    = "puppet"
-  pp_role        = "${var.pipelines_role}"
-  pp_application = "${var.pipelines_application}"
-  pp_environment = "${var.pp_environment}"
-  puppet_ip      = "${module.puppet.puppet_private_ip}"
-  zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
-  puppetize      = true
-}
+#module "cd4pe" {
+#  source         = "modules/ec2_instance"
+#  ostype         = "linux"
+#  user_name      = "${var.user_name}"
+#  instance_type  = "${var.cd4pe_instance_type}"
+#  count          = "${var.cd4pe_count}"
+#  name           = "cd4pe"
+#  pridomain      = "${var.pridomain}"
+#  pubdomain      = "${var.pubdomain}"
+#  ami            = "${data.aws_ami.centos_7.image_id}"
+#  subnet_id      = "${module.network.subnet_id}"
+#  sshkey         = "${var.aws_sshkey}"
+#  puppet_name    = "puppet"
+#  pp_role        = "${var.cd4pe_role}"
+#  pp_application = "${var.cd4pe_application}"
+#  pp_environment = "${var.pp_environment}"
+#  puppet_ip      = "${module.puppet.puppet_private_ip}"
+#  zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
+#  puppetize      = true
+#}
+#
+#// module "discovery" {
+#//   source         = "modules/ec2_instance"
+#//   ostype         = "linux"
+#//   user_name      = "${var.user_name}"
+#//   instance_type  = "${var.discovery_instance_type}"
+#//   count          = "${var.discovery_count}"
+#//   name           = "discovery"
+#//   pridomain      = "${var.pridomain}"
+#//   pubdomain      = "${var.pubdomain}"
+#//   ami            = "${data.aws_ami.centos_7.image_id}"
+#//   subnet_id      = "${module.network.subnet_id}"
+#//   sshkey         = "${var.aws_sshkey}"
+#//   puppet_name    = "puppet"
+#//   pp_role        = "${var.discovery_role}"
+#//   pp_application = "${var.discovery_application}"
+#//   pp_environment = "${var.pp_environment}"
+#//   puppet_ip      = "${module.puppet.puppet_private_ip}"
+#//   zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
+#//   puppetize      = true
+#// }
+#
+#module "pipelines" {
+#  source         = "modules/ec2_instance"
+#  ostype         = "linux"
+#  user_name      = "${var.user_name}"
+#  instance_type  = "${var.pipelines_instance_type}"
+#  count          = "${var.pipelines_count}"
+#  name           = "pipelines"
+#  pridomain      = "${var.pridomain}"
+#  pubdomain      = "${var.pubdomain}"
+#  ami            = "${data.aws_ami.centos_7.image_id}"
+#  subnet_id      = "${module.network.subnet_id}"
+#  sshkey         = "${var.aws_sshkey}"
+#  puppet_name    = "puppet"
+#  pp_role        = "${var.pipelines_role}"
+#  pp_application = "${var.pipelines_application}"
+#  pp_environment = "${var.pp_environment}"
+#  puppet_ip      = "${module.puppet.puppet_private_ip}"
+#  zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
+#  puppetize      = true
+#}
