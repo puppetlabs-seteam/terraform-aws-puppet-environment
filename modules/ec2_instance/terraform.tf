@@ -65,6 +65,7 @@ resource "aws_instance" "ec2_instance" {
 }
 
 resource "aws_route53_record" "ec2_instance-dns" {
+  count = "${var.count}"
   zone_id = "${var.zone_id}"
   name    = "${var.count > 1 ? 
             format("%v-%02d.%v", var.name, count.index + 1, var.pubdomain) :
