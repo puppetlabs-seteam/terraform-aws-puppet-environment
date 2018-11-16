@@ -72,5 +72,5 @@ resource "aws_route53_record" "ec2_instance-dns" {
             format("%v.%v", var.name, var.pubdomain)}"
   type    = "A"
   ttl     = "300"
-  records = ["${aws_instance.ec2_instance.*.public_ip}"]
+  records = ["${element(aws_instance.ec2_instance.*.public_ip, count.index)}"]
 }
