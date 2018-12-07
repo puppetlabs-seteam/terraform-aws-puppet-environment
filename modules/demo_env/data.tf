@@ -1,14 +1,15 @@
 
 data "aws_route53_zone" "mydomain" {
-  name    = "${var.pubdomain}"
+  name    = "${var.domain}"
 }
 
+
 data "aws_ami" "windows_2016" {
-  owners      = ["amazon"]
+  owners      = ["801119661308"]
   most_recent = true
   filter = {
     name = "name"
-    values = ["Windows_Server-*-English-Core-Base*"]
+    values = ["Windows_Server-2016-English-Full-Base-2018*"]
   }
 }
 

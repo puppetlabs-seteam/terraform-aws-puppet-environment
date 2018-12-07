@@ -1,184 +1,146 @@
+variable "region" { default = "us-west-2" }
+variable "pridomain" {}
+variable "pubdomain" {}
+variable "prefix" {}
+
+provider "aws" {
+  region  = "${var.region}"
+  // access_key = "AKIAJZXJSYGOWWOA7ECQ"
+  // secret_key = "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"
+  access_key = "AKIAIYYTWPA6C6FOVMZQ"
+  secret_key = "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"
+}
 #--------------------------------------------------------------
 # This module creates all demonstration resources
 #--------------------------------------------------------------
 module "network" {
   source    = "modules/network"
-  cidr      = "${var.network}"
+  cidr      = "10.0.5.0/24"
   pridomain = "${var.pridomain}"
   pubdomain = "${var.pubdomain}"
+  prefix    = "${var.prefix}"
 }
 
-#--------------------------------------------------------------
-# Module: Build Puppet Master Server
-#--------------------------------------------------------------
-module "puppet" {
-  source = "modules/puppet"
-  name          = "puppet"
-  subnet_id     = "${module.network.subnet_id}"
-  pridomain     = "${var.pridomain}"
-  pubdomain     = "${var.pubdomain}"
-  ami           = "${data.aws_ami.centos_7.image_id}"
-  sshkey        = "${var.aws_sshkey}"
-  git_pri_key   = "${var.git_pri_key}"
-  git_pub_key   = "${var.git_pub_key}"
-  git_url       = "${var.git_url}"
-  eyaml_pri_key = "${var.eyaml_pri_key}"
-  eyaml_pub_key = "${var.eyaml_pub_key}"
-  user_name     = "${var.user_name}"
-  prefix        = "${var.prefix}"
-  pe_version    = "${var.pe_version}"
-  zone_id       = "${data.aws_route53_zone.mydomain.zone_id}"
+module "lab-01" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-01"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-01.tsedemos.com"
 }
 
+module "lab-02" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-02"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-02.tsedemos.com"
 
-#--------------------------------------------------------------
-# Module: Build Windows Server
-#--------------------------------------------------------------
-module "windows" {
-  source         = "modules/ec2_instance"
-  ostype         = "windows"
-  name           = "windows"
-  puppet_name    = "puppet"
-  user_name      = "${var.user_name}"
-  instance_type  = "${var.windows_instance_type}"
-  count          = "${var.windows_count}"
-  pridomain      = "${var.pridomain}"
-  pubdomain      = "${var.pubdomain}"
-  ami            = "${var.windows_ami}"
-  subnet_id      = "${module.network.subnet_id}"
-  sshkey         = "${var.aws_sshkey}"
-  password       = "${var.windows_administrator_password}"
-  pp_role        = "${var.pp_role}"
-  pp_application = "${var.pp_application}"
-  pp_environment = "${var.pp_environment}"
-  puppet_ip      = "${module.puppet.puppet_private_ip}"
-  zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
-  puppetize      = true
 }
 
-module "linux" {
-  source = "modules/ec2_instance"
-  ostype = "linux"
-  user_name      = "${var.user_name}"
-  instance_type  = "${var.linux_instance_type}"
-  count          = "${var.linux_count}"
-  name           = "linux"
-  pridomain      = "${var.pridomain}"
-  pubdomain      = "${var.pubdomain}"
-  ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${module.network.subnet_id}"
-  sshkey         = "${var.aws_sshkey}"
-  puppet_name    = "puppet"
-  pp_role        = "${var.pp_role}"
-  pp_application = "${var.pp_application}"
-  pp_environment = "${var.pp_environment}"
-  puppet_ip      = "${module.puppet.puppet_private_ip}"
-  zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
-  puppetize      = true
+module "lab-03" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-03"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-03.tsedemos.com"
+
 }
 
-module "unmanaged_linux_nodes" {
-  source = "modules/ec2_instance"
-  ostype         = "linux"
-  count          = "${var.unmanaged_linux_count}"
-  user_name      = "${var.user_name}"
-  instance_type  = "${var.linux_instance_type}"
-  name           = "no-lin"
-  pridomain      = "${var.pridomain}"
-  pubdomain      = "${var.pubdomain}"
-  ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${module.network.subnet_id}"
-  sshkey         = "${var.aws_sshkey}"
-  puppet_name    = "puppet"
-  pp_role        = "${var.pp_role}"
-  pp_application = "${var.pp_application}"
-  pp_environment = "${var.pp_environment}"
-  puppet_ip      = "${module.puppet.puppet_private_ip}"
-  zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
-  puppetize      = false
+module "lab-04" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-04"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-04.tsedemos.com"
+
 }
 
-module "unmanaged_windows_nodes" {
-  source = "modules/ec2_instance"
-  ostype         = "windows"
-  count          = "${var.unmanaged_windows_count}"
-  user_name      = "${var.user_name}"
-  instance_type  = "${var.windows_instance_type}"
-  name           = "no-win"
-  pridomain      = "${var.pridomain}"
-  pubdomain      = "${var.pubdomain}"
-  ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${module.network.subnet_id}"
-  sshkey         = "${var.aws_sshkey}"
-  puppet_name    = "puppet"
-  password       = "${var.windows_administrator_password}"
-  pp_role        = "${var.pp_role}"
-  pp_application = "${var.pp_application}"
-  pp_environment = "${var.pp_environment}"
-  puppet_ip      = "${module.puppet.puppet_private_ip}"
-  zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
-  puppetize      = false
+module "lab-05" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-05"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-05.tsedemos.com"
+
 }
 
-module "cd4pe" {
-  source         = "modules/ec2_instance"
-  ostype         = "linux"
-  user_name      = "${var.user_name}"
-  instance_type  = "${var.cd4pe_instance_type}"
-  count          = "${var.cd4pe_count}"
-  name           = "cd4pe"
-  pridomain      = "${var.pridomain}"
-  pubdomain      = "${var.pubdomain}"
-  ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${module.network.subnet_id}"
-  sshkey         = "${var.aws_sshkey}"
-  puppet_name    = "puppet"
-  pp_role        = "${var.cd4pe_role}"
-  pp_application = "${var.cd4pe_application}"
-  pp_environment = "${var.pp_environment}"
-  puppet_ip      = "${module.puppet.puppet_private_ip}"
-  zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
-  puppetize      = true
+module "lab-06" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-06"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-06.tsedemos.com"
+
 }
 
-// module "discovery" {
-//   source         = "modules/ec2_instance"
-//   ostype         = "linux"
-//   user_name      = "${var.user_name}"
-//   instance_type  = "${var.discovery_instance_type}"
-//   count          = "${var.discovery_count}"
-//   name           = "discovery"
-//   pridomain      = "${var.pridomain}"
-//   pubdomain      = "${var.pubdomain}"
-//   ami            = "${data.aws_ami.centos_7.image_id}"
-//   subnet_id      = "${module.network.subnet_id}"
-//   sshkey         = "${var.aws_sshkey}"
-//   puppet_name    = "puppet"
-//   pp_role        = "${var.discovery_role}"
-//   pp_application = "${var.discovery_application}"
-//   pp_environment = "${var.pp_environment}"
-//   puppet_ip      = "${module.puppet.puppet_private_ip}"
-//   zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
-//   puppetize      = true
+module "lab-07" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-07"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-07.tsedemos.com"
+
+}
+
+module "lab-08" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-08"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-08.tsedemos.com"
+
+}
+
+module "lab-09" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-09"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-09.tsedemos.com"
+
+}
+
+module "lab-10" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-10"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-10.tsedemos.com"
+
+}
+
+module "lab-11" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-11"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-11.tsedemos.com"
+
+}
+
+module "lab-12" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-12"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-12.tsedemos.com"
+
+}
+
+module "lab-13" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-13"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-13.tsedemos.com"
+
+}
+
+module "lab-14" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-14"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-14.tsedemos.com"
+
+}
+
+module "lab-15" {
+  source          = "modules/demo_env"
+  lab_environment = "lab-15"
+  subnet_id       = "${module.network.subnet_id}"
+  domain          = "lab-15.tsedemos.com"
+
+}
+// module "lab-02" {
+//   source          = "modules/demo_env"
+//   lab_environment = "lab-02"
+//   subnet_id       = "${module.network.subnet_id}"
 // }
-
-module "pipelines" {
-  source         = "modules/ec2_instance"
-  ostype         = "linux"
-  user_name      = "${var.user_name}"
-  instance_type  = "${var.pipelines_instance_type}"
-  count          = "${var.pipelines_count}"
-  name           = "pipelines"
-  pridomain      = "${var.pridomain}"
-  pubdomain      = "${var.pubdomain}"
-  ami            = "${data.aws_ami.centos_7.image_id}"
-  subnet_id      = "${module.network.subnet_id}"
-  sshkey         = "${var.aws_sshkey}"
-  puppet_name    = "puppet"
-  pp_role        = "${var.pipelines_role}"
-  pp_application = "${var.pipelines_application}"
-  pp_environment = "${var.pp_environment}"
-  puppet_ip      = "${module.puppet.puppet_private_ip}"
-  zone_id        = "${data.aws_route53_zone.mydomain.zone_id}"
-  puppetize      = true
-}

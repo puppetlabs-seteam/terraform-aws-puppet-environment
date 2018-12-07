@@ -58,8 +58,22 @@ function pre_install_pe {
   echo "*" > /etc/puppetlabs/puppet/autosign.conf
   cat > /etc/puppetlabs/puppet/csr_attributes.yaml << YAML
 extension_requests:
-    pp_role:  puppetmaster
+    pp_role:  puppet_master
 YAML
+  cat > /etc/puppetlabs/license.key << LIC
+#######################
+#  Begin License File #
+#######################
+# PUPPET ENTERPRISE LICENSE - Puppet Labs
+to: Puppet Labs
+nodes: 50
+start: 2014-02-10
+end: 2025-06-13
+#####################
+#  End License File #
+#####################
+LIC
+
 }
 
 #--------------------------------------------------------------
@@ -118,7 +132,6 @@ FILE
 deploy
 puppetlabs
 TEXT
-
   puppet-code -t $${HOME}/.puppetlabs/token deploy production -w
   mkdir -p /etc/puppetlabs/facter/facts.d
   # echo ng_all_id=`puppet resource node_group 'All Nodes' | grep "id " | cut -d"'" -f2` > /etc/puppetlabs/facter/facts.d/nodegroups.txt
@@ -141,11 +154,13 @@ function install_pe {
   echo "======================= Executing install_pe ======================="
 
   cat > /tmp/pe.conf << FILE
-"console_admin_password": "puppetlabs"
+"console_admin_password": "kwijibo"
 "puppet_enterprise::puppet_master_host": "${master_fqdn}"
 "puppet_enterprise::profile::master::code_manager_auto_configure": true
 "puppet_enterprise::profile::master::r10k_remote": "${git_url}"
 "puppet_enterprise::profile::master::r10k_private_key": "/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa"
+"pe_install::puppet_master_dnsaltnames": ["${alt_name}"]
+
 FILE
   # TODO: this is so wrong but made it set the certname and install again after failure.
   /tmp/puppet-enterprise-$${PVER}-el-7-x86_64/puppet-enterprise-installer -c /tmp/pe.conf

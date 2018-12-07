@@ -5,7 +5,7 @@
 #--------------------------------------------------------------
 set -x
 echo HOSTNAME=${name} >> /etc/sysconfig/networking
-echo 127.0.0.1 ${name}.${domain} ${name} >> /etc/hosts
+# echo 127.0.0.1 ${name}.${domain} ${name} >> /etc/hosts
 echo ${puppet_ip} ${puppet_fqdn} ${puppet_name} >> /etc/hosts
 
 

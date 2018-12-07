@@ -51,7 +51,7 @@ function pre_install_pe {
   echo "*" > /etc/puppetlabs/puppet/autosign.conf
   cat > /etc/puppetlabs/puppet/csr_attributes.yaml << YAML
 extension_requests:
-    pp_role:  puppetmaster
+    pp_role:  puppet_master
 YAML
 }
 

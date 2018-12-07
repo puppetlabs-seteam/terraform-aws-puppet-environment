@@ -1,6 +1,7 @@
 variable cidr {}
 variable pubdomain {}
 variable pridomain {}
+variable prefix {}
 
 output "subnet_id" { value = "${aws_subnet.puppetdemos_subnet.id}" }
 #--------------------------------------------------------------
@@ -45,7 +46,7 @@ resource "aws_internet_gateway" "igw" {
 
 resource "aws_default_network_acl" "defaultnetworkacl" {
   lifecycle {
-    ignore_changes = true
+    ignore_changes = []
   }
   default_network_acl_id = "${aws_vpc.puppetdemos_vpc.default_network_acl_id}"
 
@@ -198,19 +199,19 @@ resource "aws_default_security_group" "defaultsg" {
   
 }
 
-resource "aws_vpc_dhcp_options" "defaultdhcp" {
-  domain_name          = "${var.pridomain}"
-  domain_name_servers  = [ "AmazonProvidedDNS" ]
-  tags {
-    Name = "${var.pridomain}-dhcp"
-    department = "TSE"
-    project = "Puppet Demo Environment"
-    created_by = "TSE"
-    lifetime = "10y"
-  }
-}
+// resource "aws_vpc_dhcp_options" "defaultdhcp" {
+//   domain_name          = "${format("%v.%v", var.prefix, var.pridomain)}"
+//   domain_name_servers  = [ "AmazonProvidedDNS" ]
+//   tags {
+//     Name = "${var.pridomain}-dhcp"
+//     department = "TSE"
+//     project = "Puppet Demo Environment"
+//     created_by = "TSE"
+//     lifetime = "10y"
+//   }
+// }
 
-resource "aws_vpc_dhcp_options_association" "defaultresolver" {
-  vpc_id = "${aws_vpc.puppetdemos_vpc.id}"
-  dhcp_options_id = "${aws_vpc_dhcp_options.defaultdhcp.id}"
-}
+// resource "aws_vpc_dhcp_options_association" "defaultresolver" {
+//   vpc_id = "${aws_vpc.puppetdemos_vpc.id}"
+//   dhcp_options_id = "${aws_vpc_dhcp_options.defaultdhcp.id}"
+// }

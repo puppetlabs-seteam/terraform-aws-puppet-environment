@@ -5,3 +5,4 @@ puppetdemos
 puppetdemos.pub
 .terraform/
 keys/
+remote.tf

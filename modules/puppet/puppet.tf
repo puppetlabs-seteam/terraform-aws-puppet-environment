@@ -16,6 +16,7 @@ variable "pe_version"    {}
 variable "zone_id"       {}
 variable "pridomain"     {}
 variable "pubdomain"     {}
+variable "domain" {  }
 
 #--------------------------------------------------------------
 # Resources: Build Puppet Master Configuration
@@ -24,7 +25,8 @@ data "template_file" "init" {
     template = "${file("modules/puppet/bootstrap/bootstrap_pe.tpl")}"
     vars {
         master_name   = "${var.name}"
-        master_fqdn   = "${var.name}.${var.pridomain}"
+        master_fqdn   = "${var.name}.${var.domain}"
+        alt_name      = "${var.name}.puppet.vm"
         git_pri_key   = "${file("${var.git_pri_key}")}"
         git_pub_key   = "${file("${var.git_pub_key}")}"
         git_url       = "${var.git_url}"
@@ -44,7 +46,7 @@ resource "aws_instance" "puppet" {
   key_name                    = "${var.sshkey}"
 
   tags {
-    Name = "${var.name}.${var.pridomain}"
+    Name = "${var.name}.${var.domain}"
     department = "tse"
     project = "Demo"
     created_by = "${var.user_name}"
@@ -55,7 +57,7 @@ resource "aws_instance" "puppet" {
 
 resource "aws_route53_record" "puppet" {
   zone_id = "${var.zone_id}"
-  name    = "puppet.${var.pubdomain}"
+  name    = "${var.name}.${var.pubdomain}"
   type    = "A"
   ttl     = "300"
   records = ["${aws_instance.puppet.public_ip}"]

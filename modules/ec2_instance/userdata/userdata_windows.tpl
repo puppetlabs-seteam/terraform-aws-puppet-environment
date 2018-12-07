@@ -49,7 +49,7 @@ function install_pa {
     $$webclient = New-Object system.net.webclient
     $$webclient.DownloadFile($$PEINSTALL_URL,$$PEINSTALL_FILE)
     if(Test-Path $$PEINSTALL_FILE){
-      sleep 300
+      sleep 450
       Write-Verbose "Starting Installation"
       Invoke-Expression -Command "$$PEINSTALL_FILE main:certname=${name}.${domain}"
       break loop 
