@@ -5,10 +5,6 @@ variable "prefix" {}
 
 provider "aws" {
   region  = "${var.region}"
-  // access_key = "AKIAJZXJSYGOWWOA7ECQ"
-  // secret_key = "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"
-  access_key = "AKIAIYYTWPA6C6FOVMZQ"
-  secret_key = "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"
 }
 #--------------------------------------------------------------
 # This module creates all demonstration resources
